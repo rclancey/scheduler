@@ -26,9 +26,11 @@ func (cf CallableFunction) Call() {
 
 type Job interface {
 	ID() string
+	SetName(string)
 	PrepareNext(t time.Time) bool
 	Next() time.Time
 	Do(callback Callable)
+	DoOnce(callback Callable)
 	AndAfterExactly(delay time.Duration) Job
 	AndAfterAround(delay, stddev time.Duration) Job
 	AndAfterAtLeast(delay, stddev time.Duration) Job
@@ -99,6 +101,10 @@ func (job *BaseJob) setFollowups(jobs []Job) {
 
 func (job *BaseJob) ID() string {
 	return job.id.String()
+}
+
+func (job *BaseJob) SetName(name string) {
+	job.name = name
 }
 
 func (job *BaseJob) PrepareNext(t time.Time) bool {
